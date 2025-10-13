@@ -1,0 +1,63 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Python CI   ## This is the name : Basically what is my workflow name.
+## Note : This is a example of continious integration(CI)
+
+
+## Inorder to trigger the workflow we need to define some of the events , events like : Push , Pull , Merge , Delete
+## Different Different events will be specifically there , and then based on these events we can trigger a workflow.
+## To trigger the workflow we have to write all our events.
+
+## Trigger the workflow on any push to the main branch or pull request
+on:     ## We define events in on keyword , here push is specifically my event. 
+  push:
+    branches: 
+        - main
+  pull_request:
+    branches:
+        - main
+## Here the above code is saying whenever i m doing a push on branches like main or i m doing a pull on branches like main ,
+## here my push , pull are basically my events. U can add as many events u want , u can specify branches also over here.
+## In projects u can also have branches like staging, production , and many different branches.
+## Inside on keyword we are writing push and pull request , and on which branches we are going to probably trigger this event. 
+
+
+## We may have multiple jobs where we may be running , this job events like usecases or testcases we are running on ubuntu latest container , basically github provides containers where we can run this entire application and test it. 
+jobs:   ## Note that : Jobs will be running in some kind of container , here we are using ubuntu-latest container(which is a linux container) , we can also use windows or mac os container.
+  test:  ## We are specifically building for test cases. Here our job name is test
+    runs-on: ubuntu-latest ## here we also have windows os containers and mac os containers , u can specify the type of container u want to use in the key-word : runs-on
+    ## Next we write is steps : Steps w.r.t the execution of the workflow.
+    ## Steps written with name and run
+    ## Here below we have defined workflow steps , every workflow step we define in this particular block : i.e. uses and name
+    steps:
+        # Step 1: Check out the code from the repository. 
+        - name: Check out code
+          uses: actions/checkout@v2  ## This is a prebuilt action that is defined by github actions. This action will checkout all the code from the repository. w.r.t different actions this checkout version may change with some more added functionalities.
+          ## Rightnow we are using version 2 , in this case we are using action/checkout@v2 --> this in short is nothing but basically triggering an event wherein we take the code from the repository and we check it out so that it can be moved towards the container and it can be tested over there. 
+
+        # Step 2: Set up Python environment 
+        - name: Set up Python
+          uses: actions/setup-python@v2  ## This is again provided by github actions and this is specifically used inorder to create a python environment.
+          with:                          ## Here u can experiment with different versions also. v3 will add some more functionalities while we are creating python environment.
+            python-version: '3.8'  ## Here with 'with' keyword we define along with python version:3.8
+            
+        # Step 3: Install dependencies
+        - name: Install dependencies
+          run : |
+            python -m pip install --upgrade pip   
+            pip install -r requirements.txt
+        ## To run all the test usecases i definitely require the pytest library and this pytest library needs to be installed in the container.
+        ## Both pandas and pytest libraries will be installed in the ubuntu-latest container. 
+        ## In step 3 we are running two commands , 1st is upgrading pip , 2nd is installing the libraries in requirements.txt file.   
+        
+        # Step 4: Run tests
+        ## Step 4 is running our tests
+        - name: Run tests
+          run: pytest   ## we will run this command which is named pytest. 
+        ## As soon as this command runs in a container it will start looking for the tests folder and then it will go ahead and execute all the Unit Test cases. It will extract unit tes cases created by us in test_operations.py file in the tests folder. 
+          
+        ## Like this we can define any number of steps in this format  
+
+
+        
